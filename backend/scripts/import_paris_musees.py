@@ -1,8 +1,10 @@
 import os
-import json
 import requests
 
 from dotenv import load_dotenv
+
+from app.database.database import SessionLocal
+from app.models.artwork_models import Artwork
 
 load_dotenv()
 
@@ -18,7 +20,7 @@ headers = {
 query = """
 {
   nodeQuery(
-    limit: 1
+    limit: 50
     filter: {
       conditions: [
         {
@@ -31,53 +33,55 @@ query = """
     entities {
       entityLabel
       entityUuid
-
-      ... on NodeOeuvre {
-
-        title
-
-        fieldMusee {
-          entity {
-            name
-          }
-        }
-
-      }
     }
   }
 }
 """
 
-try:
+response = requests.post(
+    URL,
+    json={"query": query},
+    headers=headers,
+    timeout=60
+)
 
-    session = requests.Session()
+data = response.json()
 
-    response = session.post(
-        URL,
-        json={"query": query},
-        headers=headers,
-        timeout=(30, 120)
+db = SessionLocal()
+
+entities = data["data"]["nodeQuery"]["entities"]
+
+added = 0
+skipped = 0
+
+for entity in entities:
+
+    if entity is None:
+        continue
+
+    existing = (
+        db.query(Artwork)
+        .filter(
+            Artwork.adlib_id == entity["entityUuid"]
+        )
+        .first()
     )
 
-    response = requests.post(
-        URL,
-        json={"query": query},
-        headers=headers,
-        timeout=60,
-        stream=True
+    if existing:
+        skipped += 1
+        continue
+
+    artwork = Artwork(
+        adlib_id=entity["entityUuid"],
+        title=entity["entityLabel"],
+        museum="Paris Musées"
     )
 
-    print("Status Code:")
-    print(response.status_code)
+    db.add(artwork)
 
-    print("\nPrimeiros 1000 caracteres:")
+    added += 1
 
-    content = response.raw.read(1000)
+db.commit()
 
-    print(content.decode("utf-8", errors="ignore"))
-
-    
-
-except requests.exceptions.RequestException as e:
-    print("Erro HTTP:")
-    print(e)
+print(f"Obras inseridas: {added}")
+print(f"Obras ignoradas (já existentes): {skipped}")
