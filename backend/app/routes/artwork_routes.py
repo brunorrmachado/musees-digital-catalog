@@ -13,11 +13,21 @@ router = APIRouter()
 
 
 @router.get("/artworks")
-def get_artworks():
+def get_artworks(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100)
+):
 
     db = SessionLocal()
 
-    artworks = db.query(Artwork).all()
+    offset = (page - 1) * limit
+
+    artworks = (
+        db.query(Artwork)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
 
     return artworks
 
@@ -143,3 +153,47 @@ def update_artwork(
     db.refresh(artwork)
 
     return artwork
+
+
+@router.get("/artworks/museum/{museum_name}")
+def get_by_museum(museum_name: str):
+
+    db = SessionLocal()
+
+    artworks = (
+        db.query(Artwork)
+        .filter(
+            Artwork.museum.ilike(f"%{museum_name}%")
+        )
+        .all()
+    )
+
+    return artworks
+
+
+@router.get("/artworks/author/{author_name}")
+def get_by_author(author_name: str):
+
+    db = SessionLocal()
+
+    artworks = (
+        db.query(Artwork)
+        .filter(
+            Artwork.author.ilike(f"%{author_name}%")
+        )
+        .all()
+    )
+
+    return artworks
+
+
+@router.get("/artworks/count")
+def count_artworks():
+
+    db = SessionLocal()
+
+    total = db.query(Artwork).count()
+
+    return {
+        "total_artworks": total
+    }
