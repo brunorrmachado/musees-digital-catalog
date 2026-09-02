@@ -1,0 +1,18 @@
+# Ambiente virtual
+backend/.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Variáveis de ambiente
+.env
+
+# VS Code
+.vscode/
+
+# Banco local
+*.db
+
+# Logs
+*.log
