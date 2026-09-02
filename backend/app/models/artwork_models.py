@@ -11,7 +11,10 @@ class Artwork(Base):
 
     id = Column(Integer, primary_key=True)
 
-    adlib_id = Column(Text)
+    adlib_id = Column(
+        Text,
+        unique=True
+    )
 
     title = Column(Text)
 
