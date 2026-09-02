@@ -29,9 +29,20 @@ query = """
     }
   ) {
     entities {
+
       entityLabel
-      entityBundle
-      __typename
+      entityUuid
+
+      ... on NodeOeuvre {
+
+        fieldMusee {
+          entity {
+            name
+          }
+        }
+
+      }
+
     }
   }
 }

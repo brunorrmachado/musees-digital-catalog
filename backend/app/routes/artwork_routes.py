@@ -20,16 +20,27 @@ def get_artworks(
 
     db = SessionLocal()
 
+    total = db.query(Artwork).count()
+
     offset = (page - 1) * limit
 
     artworks = (
         db.query(Artwork)
+        .order_by(Artwork.id)
         .offset(offset)
         .limit(limit)
         .all()
     )
 
-    return artworks
+    total_pages = (total + limit - 1) // limit
+
+    return {
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_pages": total_pages,
+        "items": artworks
+    }
 
 
 @router.get("/artworks/search")
