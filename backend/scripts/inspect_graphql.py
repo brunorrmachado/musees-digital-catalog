@@ -14,7 +14,7 @@ headers = {
     "Authorization": f"Bearer {TOKEN}",
     "Content-Type": "application/json"
 }
-
+print(URL)
 query = """
 {
   nodeQuery(
