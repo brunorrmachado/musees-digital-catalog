@@ -14,9 +14,8 @@ Catálogo digital de obras de museus utilizando FastAPI, PostgreSQL e a API Grap
 ## Instalação
 
 ```bash
-git clone https://github.com/SEU_USUARIO/musees-digital-catalog.git
+git clone https://github.com/brunorrmachado/musees-digital-catalog.git
 
 cd musees-digital-catalog/backend
 
 python -m venv .venv
-``
