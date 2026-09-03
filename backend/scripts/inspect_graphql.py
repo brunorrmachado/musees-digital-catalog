@@ -18,20 +18,22 @@ headers = {
 query = """
 {
   nodeQuery(
-    limit: 20
+    limit: 1
     filter: {
       conditions: [
         {
-          field: "type"
-          value: "oeuvre"
+          field: "uuid"
+          value: "c1e8311d-419a-4b5b-8902-b60500865c4d"
         }
       ]
     }
   ) {
     entities {
-      entityLabel
+      entityId
       entityUuid
+      entityLabel
       entityBundle
+      entityType
       __typename
     }
   }
