@@ -26,4 +26,6 @@ class Artwork(Base):
 
     description = Column(Text)
 
+    content_type = Column(Text, nullable=True)
+
     source_url = Column(Text)

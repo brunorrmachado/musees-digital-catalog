@@ -33,6 +33,8 @@ query = """
     entities {
       entityLabel
       entityUuid
+      entityBundle
+      __typename
     }
   }
 }
@@ -57,6 +59,10 @@ skipped = 0
 for entity in entities:
 
     if entity is None:
+        continue
+
+    # Importa apenas obras reais
+    if entity.get("__typename") != "NodeOeuvre":
         continue
 
     existing = (

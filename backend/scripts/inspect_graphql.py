@@ -18,7 +18,7 @@ headers = {
 query = """
 {
   nodeQuery(
-    limit: 5
+    limit: 20
     filter: {
       conditions: [
         {
@@ -29,20 +29,10 @@ query = """
     }
   ) {
     entities {
-
       entityLabel
       entityUuid
-
-      ... on NodeOeuvre {
-
-        fieldMusee {
-          entity {
-            name
-          }
-        }
-
-      }
-
+      entityBundle
+      __typename
     }
   }
 }
