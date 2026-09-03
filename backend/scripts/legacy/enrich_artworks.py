@@ -12,7 +12,7 @@ db = SessionLocal()
 # TESTE: apenas 10 registros
 artworks = (
     db.query(Artwork)
-    .filter(Artwork.image_url.is_(None))
+    .filter(Artwork.public_url.is_(None))
     .all()
 )
 
@@ -124,6 +124,9 @@ for artwork in artworks:
                 break
 
         artwork.image_url = image_url
+
+        if public_url:
+            artwork.public_url = public_url
 
         if author:
             artwork.author = author

@@ -20,6 +20,10 @@ class Artwork(Base):
 
     image_url = Column(Text)
 
+    license = Column(Text)
+
+    download_url = Column(Text)
+
     author = Column(Text)
 
     museum = Column(Text)
@@ -29,3 +33,5 @@ class Artwork(Base):
     content_type = Column(Text, nullable=True)
 
     source_url = Column(Text)
+
+    public_url = Column(Text)
