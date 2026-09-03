@@ -13,7 +13,6 @@ db = SessionLocal()
 artworks = (
     db.query(Artwork)
     .filter(Artwork.image_url.is_(None))
-    .limit(10)
     .all()
 )
 

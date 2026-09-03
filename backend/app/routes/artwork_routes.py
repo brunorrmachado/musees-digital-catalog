@@ -1,7 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from fastapi import Query
 
+from fastapi.params import Depends
+from requests import Session
 from sqlalchemy import or_
 
 from app.schemas.artwork_schemas import ArtworkCreate
@@ -11,6 +13,12 @@ from app.models.artwork_models import Artwork
 
 router = APIRouter()
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @router.get("/artworks")
 def get_artworks(
@@ -208,3 +216,17 @@ def count_artworks():
     return {
         "total_artworks": total
     }
+
+
+@router.get("/artworks/{artwork_id}")
+def get_artwork(
+    artwork_id: int,
+    db: Session = Depends(get_db)
+):
+    artwork = (
+        db.query(Artwork)
+        .filter(Artwork.id == artwork_id)
+        .first()
+    )
+
+    return artwork
