@@ -1,7 +1,7 @@
 import Image from "next/image";
-
 import { getArtworks } from "../services/cc0Artworkservice";
 import ArtworkGrid from "../components/ArtworkGrid";
+import Link from "next/link";
 
 type Artwork = {
   id: number;
@@ -24,6 +24,7 @@ export default async function Home() {
         padding: "2rem",
       }}
     >
+
       {/* HEADER */}
 
       <div
@@ -53,6 +54,53 @@ export default async function Home() {
           {artworks.length} obras
         </span>
       </div>
+      
+      {/* NAVEGAÇÃO */}
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "2.5rem",
+        }}
+      >
+        <nav
+          style={{
+            display: "flex",
+            gap: "2rem",
+            fontSize: "0.95rem",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Obras
+          </Link>
+          <Link
+            href="/analytics"
+            style={{
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Analytics
+          </Link>
+        </nav>
+      </div>
+
+      <hr
+        style={{
+          border: "none",
+          borderTop: "1px solid #ddd",
+          marginBottom: "2.5rem",
+        }}
+      />
 
       {/* GALERIA */}
 
