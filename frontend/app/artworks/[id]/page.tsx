@@ -28,18 +28,22 @@ export default async function ArtworkPage({
     <main className="min-h-screen bg-slate-100 p-10">
       <div className="mx-auto max-w-5xl">
         <Link href="/artworks">
-          ← Voltar ao catálogo
         </Link>
-
+        <Link
+          href="/"
+          className="mb-6 inline-block text-blue-600 hover:underline"
+        >
+          Voltar para o catálogo
+        </Link>
         <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
           {artwork.image_url ? (
             <img
               src={artwork.image_url}
               alt={artwork.title}
-              className="w-full h-full object-cover"
+              className="w-full max-h-[700px] object-contain bg-slate-100"
             />
           ) : (
-            <div className="flex h-96 items-center justify-center bg-slate-200">
+            <div className="flex aspect-[4/5] items-center justify-center bg-slate-200">
               <span className="text-slate-500">
                 Sem imagem disponível
               </span>

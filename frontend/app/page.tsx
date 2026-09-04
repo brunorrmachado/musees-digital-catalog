@@ -1,86 +1,62 @@
-import Link from "next/link";
+import Image from "next/image";
 
-async function getArtworks() {
-  const response = await fetch(
-    "http://127.0.0.1:8000/artworks?page=1&limit=20",
-    {
-      cache: "no-store",
-    }
-  );
+import { getArtworks } from "../services/cc0Artworkservice";
+import ArtworkGrid from "../components/ArtworkGrid";
 
-  if (!response.ok) {
-    throw new Error("Erro ao carregar obras");
-  }
-
-  return response.json();
-}
+type Artwork = {
+  id: number;
+  title: string;
+  author: string;
+  museum: string;
+  image_url: string;
+  license: string;
+  download_url: string;
+};
 
 export default async function Home() {
-  const data = await getArtworks();
+  const artworks: Artwork[] = await getArtworks();
 
   return (
-    <main className="min-h-screen bg-slate-100 p-10">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10">
-          <h1 className="text-5xl font-bold text-slate-900">
-            🏛️ Museu Digital
-          </h1>
+    <main
+      style={{
+        maxWidth: "1400px",
+        margin: "0 auto",
+        padding: "2rem",
+      }}
+    >
+      {/* HEADER */}
 
-          <p className="mt-3 text-lg text-slate-600">
-            Catálogo digital enriquecido automaticamente com dados do Paris Musées
-          </p>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "2rem",
+        }}
+      >
+        <Image
+          src="/logo.svg"
+          alt="Art Catalog"
+          width={400}
+          height={100}
+        />
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-          {data.items.map((artwork: any) => (
-            <Link
-              key={artwork.id}
-              href={`/artworks/${artwork.id}`}
-              className="block overflow-hidden rounded-2xl bg-white shadow-lg"
-            >
-              <div className="h-64 w-full bg-slate-200">
-                {artwork.image_url ? (
-                  <img
-                    src={artwork.image_url}
-                    alt={artwork.title}
-                    className="h-64 w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <span className="text-slate-500">
-                      Sem imagem
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="p-6">
-                <h2 className="mb-3 line-clamp-2 min-h-[3.5rem] text-xl font-bold text-slate-900">
-                  {artwork.title}
-                </h2>
-
-                <div className="space-y-2 text-sm">
-                  <p className="text-slate-700">
-                    <span className="font-semibold">
-                      Museu:
-                    </span>{" "}
-                    {artwork.museum || "Não informado"}
-                  </p>
-
-                  {artwork.author && (
-                    <p className="text-slate-700">
-                      <span className="font-semibold">
-                        Autor:
-                      </span>{" "}
-                      {artwork.author}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <span
+          style={{
+            background: "#111827",
+            color: "#fff",
+            padding: "0.5rem 1rem",
+            borderRadius: "999px",
+            fontSize: "1rem",
+          }}
+        >
+          {artworks.length} obras
+        </span>
       </div>
+
+      {/* GALERIA */}
+
+      <ArtworkGrid artworks={artworks} />
     </main>
   );
 }
