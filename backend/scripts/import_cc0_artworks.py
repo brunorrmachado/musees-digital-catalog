@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.database import SessionLocal
-from app.models.artwork_cc0_models import CC0Artwork
+
+from app.models.artwork_cc0_models import (
+    CC0ArtworkAnalytics
+)
 
 load_dotenv()
 
@@ -243,13 +246,182 @@ for item in entities:
             )
 
         # -------------------------
+        # DATA DE PRODUÇÃO
+        # -------------------------
+
+        production_date_text = None
+        production_year = None
+
+        production_block = soup.find(
+            "div",
+            class_="field-name-field-date-production"
+        )
+
+        if production_block:
+
+            production_date_text = (
+                production_block.get_text(
+                    " ",
+                    strip=True
+                )
+            )
+
+            year_tag = production_block.find(
+                "span",
+                class_="year"
+            )
+
+            if year_tag:
+
+                try:
+
+                    production_year = int(
+                        year_tag.get_text(
+                            strip=True
+                        )
+                    )
+
+                except ValueError:
+
+                    pass
+
+        # -------------------------
+        # SÉCULO
+        # -------------------------
+
+        century_text = None
+
+        century_block = soup.find(
+            "div",
+            class_="field-name-field-oeuvre-siecle"
+        )
+
+        if century_block:
+
+            century_text = (
+                century_block.get_text(
+                    " ",
+                    strip=True
+                )
+            )             
+
+        # -------------------------
+        # TIPOS DE ITEM
+        # -------------------------
+
+        item_types = None
+
+        types_block = soup.find(
+            "div",
+            class_="field-name-field-oeuvre-types-objet"
+        )
+
+        if types_block:
+
+            term_list = types_block.find(
+                "div",
+                class_="pm-term-list"
+            )
+
+            if term_list:
+
+                item_types = (
+                    term_list.get_text(
+                        ", ",
+                        strip=True
+                    )
+                )   
+
+        # -------------------------
+        # MÉTODO DE AQUISIÇÃO
+        # -------------------------
+
+        acquisition_method = None
+
+        acquisition_block = soup.find(
+            "div",
+            class_="field-name-field-modalite-acquisition"
+        )
+
+        if acquisition_block:
+
+            term_list = acquisition_block.find(
+                "div",
+                class_="pm-term-list"
+            )
+
+            if term_list:
+
+                acquisition_method = (
+                    term_list.get_text(
+                        strip=True
+                    )
+                )   
+
+        # -------------------------
+        # DATA DE AQUISIÇÃO
+        # -------------------------
+
+        acquisition_date_text = None
+        acquisition_year = None
+
+        acquisition_block = soup.find(
+            "div",
+            class_="field-name-field-date-acquisition"
+        )
+
+        if acquisition_block:
+
+            acquisition_date_text = (
+                acquisition_block.get_text(
+                    " ",
+                    strip=True
+                )
+            )
+
+            year_tag = acquisition_block.find(
+                "span",
+                class_="year"
+            )
+
+            if year_tag:
+
+                try:
+
+                    acquisition_year = int(
+                        year_tag.get_text(
+                            strip=True
+                        )
+                    )
+
+                except ValueError:
+
+                    pass    
+
+        # -------------------------
+        # GAP HISTÓRICO
+        # -------------------------
+
+        production_to_acquisition_gap = None
+
+        if (
+            production_year is not None
+            and acquisition_year is not None
+        ):
+
+            production_to_acquisition_gap = (
+                acquisition_year
+                - production_year
+            )
+
+        # -------------------------
         # EVITAR DUPLICATAS
         # -------------------------
 
         existing = (
-            db.query(CC0Artwork)
+            db.query(CC0ArtworkAnalytics)
             .filter(
-                CC0Artwork.source_id == entity_id
+                CC0ArtworkAnalytics.source_id == entity_id
             )
             .first()
         )
@@ -260,11 +432,19 @@ for item in entities:
             )
             continue
 
+        print("\n--- ANALYTICS ---")
+        print("Título:", title)
+        print("Produção:", production_year)
+        print("Aquisição:", acquisition_year)
+        print("Método:", acquisition_method)
+        print("Tipos:", item_types)
+        print("Gap:", production_to_acquisition_gap)
+
         # -------------------------
         # SALVAR
         # -------------------------
 
-        artwork = CC0Artwork(
+        artwork = CC0ArtworkAnalytics(
             source_id=entity_id,
             title=title,
             author=author,
@@ -273,6 +453,14 @@ for item in entities:
             image_url=image_url,
             license=license_name,
             download_url=download_url,
+            production_date_text=production_date_text,
+            production_year=production_year,
+            century_text=century_text,
+            item_types=item_types,
+            acquisition_method=acquisition_method,
+            acquisition_date_text=acquisition_date_text,
+            acquisition_year=acquisition_year,
+            production_to_acquisition_gap=production_to_acquisition_gap,
         )
 
         db.add(artwork)
