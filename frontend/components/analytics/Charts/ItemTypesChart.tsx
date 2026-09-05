@@ -2,33 +2,33 @@
 
 import { ResponsiveBar } from "@nivo/bar";
 
-type AcquisitionMethod = {
-  method: string;
+type ItemType = {
+  item_type: string;
   count: number;
 };
 
 type Props = {
-  data: AcquisitionMethod[];
+  data: ItemType[];
 };
 
-export default function AcquisitionMethodsChart({
+export default function ItemTypesChart({
   data,
 }: Props) {
   return (
     <div
       style={{
-        height: "650px",
+        height: "600px",
         width: "100%",
       }}
     >
       <ResponsiveBar
         data={data}
         keys={["count"]}
-        indexBy="method"
+        indexBy="item_type"
         margin={{
           top: 50,
           right: 40,
-          bottom: 80,
+          bottom: 120,
           left: 60,
         }}
         padding={0.3}
@@ -46,10 +46,10 @@ export default function AcquisitionMethodsChart({
         axisBottom={{
           tickSize: 5,
           tickPadding: 5,
-          tickRotation: -25,
-          legend: "Método de Aquisição",
+          tickRotation: -35,
+          legend: "Tipo de Item",
           legendPosition: "middle",
-          legendOffset: 60,
+          legendOffset: 85,
         }}
         axisLeft={{
           tickSize: 5,
