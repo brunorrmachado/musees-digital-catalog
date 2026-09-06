@@ -36,45 +36,78 @@ export default async function AnalyticsPage() {
     await getCenturies();
 
     return (
-        <PageContainer>
-            <PageHeader
-                activePage="analytics"
-                badgeText={`${summary.total_artworks} obras`}
-            />
+      <PageContainer>
+        <PageHeader
+          activePage="analytics"
+          badgeText={`${summary.total_artworks} obras`}
+        />
 
-            <AnalyticsGrid>
-                <DashboardCard
-                title="Obras"
-                value={summary.total_artworks}
-                />
+        {/* KPIs */}
 
-                <DashboardCard
-                title="Gap Médio"
-                value={summary.average_gap}
-                />
-
-                <DashboardCard
-                title="Produção Mais Antiga"
-                value={summary.oldest_production_year}
-                />
-
-                <DashboardCard
-                title="Última Aquisição"
-                value={summary.latest_acquisition_year}
-                />
-            </AnalyticsGrid>
-
-            <div
+        <AnalyticsGrid>
+          <div
+            style={{
+              gridColumn: "1 / -1",
+            }}
+          >
+            <AnalyticsCard>
+              <div
                 style={{
-                marginTop: "24px",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: "16px",
                 }}
-            >
-                <AnalyticsCard title="Métodos de Aquisição">
-                <AcquisitionMethodsChart
-                    data={acquisitionMethods}
+              >
+                <DashboardCard
+                  title="Obras"
+                  value={summary.total_artworks}
                 />
-                </AnalyticsCard>
-            </div>
-        </PageContainer>
+
+                <DashboardCard
+                  title="Gap Médio"
+                  value={summary.average_gap}
+                />
+
+                <DashboardCard
+                  title="Produção Mais Antiga"
+                  value={summary.oldest_production_year}
+                />
+
+                <DashboardCard
+                  title="Última Aquisição"
+                  value={summary.latest_acquisition_year}
+                />
+              </div>
+            </AnalyticsCard>
+          </div>
+        </AnalyticsGrid>
+
+        {/* GRÁFICOS */}
+
+        <AnalyticsGrid>
+          <div
+            style={{
+              gridColumn: "1 / -1",
+            }}
+          >      
+            <AnalyticsCard>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "16px",
+                }}
+              >
+                <AcquisitionMethodsChart
+                  data={acquisitionMethods}
+                />
+                <CenturiesChart
+                  data={centuries}
+                />
+              </div>
+            </AnalyticsCard>
+          </div>
+        </AnalyticsGrid>
+      </PageContainer>
     );    
 }

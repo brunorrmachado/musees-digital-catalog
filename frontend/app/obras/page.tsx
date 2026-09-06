@@ -23,7 +23,6 @@ export default async function Home() {
     <PageContainer>
       <PageHeader
         activePage="obras"
-        badgeText={`${artworks.length} obras`}
       />
 
       <ArtworkGrid artworks={artworks} />

@@ -24,8 +24,8 @@ export default function DashboardCard({
     >
       <p
         style={{
-          color: "#777",
-          fontSize: ".9rem",
+          color: "#000000",
+          fontSize: ".7rem",
           marginBottom: ".5rem",
         }}
       >

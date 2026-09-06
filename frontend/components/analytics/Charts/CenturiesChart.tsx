@@ -14,15 +14,24 @@ type Props = {
 export default function CenturiesChart({
   data,
 }: Props) {
+  const formattedData = data.map((item: { century: string }) => {
+    const match = item.century.match(/(\d+)e siècle/);
+
+    return {
+      ...item,
+      century: match ? `${match[1]}º` : item.century,
+    };
+  });
+
   return (
     <div
       style={{
-        height: "600px",
-        width: "100%",
+        height: "300px",
+        width: "1000px",
       }}
     >
       <ResponsiveBar
-        data={data}
+        data={formattedData}
         keys={["count"]}
         indexBy="century"
         margin={{
@@ -36,15 +45,34 @@ export default function CenturiesChart({
         borderRadius={2}
         enableLabel={false}
         axisBottom={{
-          tickRotation: -20,
           legend: "Século",
           legendPosition: "middle",
           legendOffset: 60,
         }}
+        valueScale={{
+          type:"linear",
+          min:0,
+          max:10,
+        }}
         axisLeft={{
+          tickValues: [0 ,2 ,4 ,6 ,8 ,10],
           legend: "Quantidade",
           legendPosition: "middle",
           legendOffset: -45,
+        }}
+        theme={{
+          axis: {
+            ticks: {
+              text: {
+                fontSize: 10,
+              },
+            },
+            legend: {
+              text: {
+                fontSize: 10,
+              },
+            },
+          },
         }}
       />
     </div>

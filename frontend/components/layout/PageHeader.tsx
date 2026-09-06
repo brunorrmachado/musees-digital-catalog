@@ -35,19 +35,6 @@ export default function PageHeader({
           <Image src="/logo.svg" alt="Musees logo" width={400} height={100} priority />
         </Link>
 
-        {badgeText && (
-          <span
-            style={{
-              background: "#111827",
-              color: "#fff",
-              padding: "0.5rem 1rem",
-              borderRadius: "999px",
-              fontSize: "1rem",
-            }}
-          >
-            {badgeText}
-          </span>
-        )}
       </div>
 
       {/* NAVEGAÇÃO */}
@@ -62,7 +49,7 @@ export default function PageHeader({
           style={{
             display: "flex",
             gap: "2rem",
-            fontSize: "0.95rem",
+            fontSize: "0.8rem",
             letterSpacing: "1px",
             textTransform: "uppercase",
           }}
