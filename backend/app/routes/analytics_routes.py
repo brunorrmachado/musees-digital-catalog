@@ -24,6 +24,14 @@ ACQUISITION_METHOD_LABELS = {
     "Inscription rétrospective suite au récolement": "Inventário",
 }
 
+ITEM_TYPES_LABELS = {
+    "Vêtements et accessoires de vêtement": "Vestimentas",
+    "Textile": "Têxtil",
+    "Emballage - Conditionnement": "Embalagem",
+    "Photographie": "Fotos"
+
+}
+
 
 router = APIRouter(
     prefix="/analytics",
@@ -160,6 +168,10 @@ def get_item_types(
     return [
         {
             "item_type": row.item_types,
+            "label": ITEM_TYPES_LABELS.get(
+                row.item_types,
+                row.item_types,
+            ),
             "count": row.count,
         }
         for row in results

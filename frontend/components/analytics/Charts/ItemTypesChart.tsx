@@ -11,76 +11,78 @@ type Props = {
   data: ItemType[];
 };
 
-export default function ItemTypesChart({
-  data,
-}: Props) {
+export default function ItemTypesChart({ data }: Props) {
   return (
     <div
       style={{
-        height: "600px",
-        width: "100%",
+        height: "300px",
+        width: "400px",
       }}
     >
       <ResponsiveBar
         data={data}
         keys={["count"]}
-        indexBy="item_type"
+        indexBy="label"
         margin={{
           top: 50,
           right: 40,
-          bottom: 120,
+          bottom: 80,
           left: 60,
         }}
         padding={0.3}
-        valueScale={{
-          type: "linear",
-        }}
-        indexScale={{
-          type: "band",
-          round: true,
-        }}
         colors={["#111827"]}
         borderRadius={2}
-        axisTop={null}
-        axisRight={null}
+        enableLabel={false}
+        layers={[
+          "grid",
+          "axes",
+          "bars",
+          ({ bars }) => (
+            <>
+              {bars.map((bar) => (
+                <text
+                  key={bar.key}
+                  x={bar.x + bar.width / 2}
+                  y={bar.y - 8}
+                  textAnchor="middle"
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    fill: "#111827",
+                  }}
+                >
+                  {bar.data.value}
+                </text>
+              ))}
+            </>
+          ),
+        ]}
         axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: -35,
           legend: "Tipo de Item",
           legendPosition: "middle",
-          legendOffset: 85,
+          legendOffset: 60,
+        }}
+        valueScale={{
+          type: "linear",
+          min: 0,
+          max: 50,
         }}
         axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
           legend: "Quantidade",
           legendPosition: "middle",
           legendOffset: -45,
         }}
-        enableLabel={false}
-        animate={true}
-        motionConfig="gentle"
         theme={{
           axis: {
             ticks: {
               text: {
-                fontSize: 12,
+                fontSize: 10,
               },
             },
             legend: {
               text: {
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: 10,
               },
-            },
-          },
-          tooltip: {
-            container: {
-              background: "#fff",
-              color: "#111",
-              fontSize: 12,
             },
           },
         }}

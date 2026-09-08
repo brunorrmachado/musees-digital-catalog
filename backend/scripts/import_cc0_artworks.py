@@ -9,7 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.database.database import SessionLocal
 
 from app.models.artwork_cc0_models import (
-    CC0ArtworkAnalytics
+    CC0Artwork,
+    CC0ArtworkAnalytics,
 )
 
 load_dotenv()
@@ -41,7 +42,7 @@ def build_public_url(alias: str | None) -> str | None:
 LIST_QUERY = """
 {
   nodeQuery(
-    limit: 100
+    limit: 500
     filter: {
       conditions: [
         {
@@ -418,7 +419,15 @@ for item in entities:
         # EVITAR DUPLICATAS
         # -------------------------
 
-        existing = (
+        existing_catalog = (
+            db.query(CC0Artwork)
+            .filter(
+                CC0Artwork.source_id == entity_id
+            )
+            .first()
+        )
+
+        existing_analytics = (
             db.query(CC0ArtworkAnalytics)
             .filter(
                 CC0ArtworkAnalytics.source_id == entity_id
@@ -426,7 +435,10 @@ for item in entities:
             .first()
         )
 
-        if existing:
+        if (
+            existing_catalog
+            and existing_analytics
+        ):
             print(
                 f"Já existe: {title}"
             )
@@ -441,29 +453,58 @@ for item in entities:
         print("Gap:", production_to_acquisition_gap)
 
         # -------------------------
-        # SALVAR
+        # SALVAR CATÁLOGO
         # -------------------------
 
-        artwork = CC0ArtworkAnalytics(
-            source_id=entity_id,
-            title=title,
-            author=author,
-            museum=museum,
-            public_url=public_url,
-            image_url=image_url,
-            license=license_name,
-            download_url=download_url,
-            production_date_text=production_date_text,
-            production_year=production_year,
-            century_text=century_text,
-            item_types=item_types,
-            acquisition_method=acquisition_method,
-            acquisition_date_text=acquisition_date_text,
-            acquisition_year=acquisition_year,
-            production_to_acquisition_gap=production_to_acquisition_gap,
-        )
+        if not existing_catalog:
 
-        db.add(artwork)
+            catalog_artwork = CC0Artwork(
+                source_id=entity_id,
+                title=title,
+                author=author,
+                museum=museum,
+                public_url=public_url,
+                image_url=image_url,
+                license=license_name,
+                download_url=download_url,
+            )
+
+            db.add(catalog_artwork)
+
+            print(
+                f"Catálogo salvo: {title}"
+            )
+
+        # -------------------------
+        # SALVAR ANALYTICS
+        # -------------------------
+
+        if not existing_analytics:
+
+            analytics_artwork = CC0ArtworkAnalytics(
+                source_id=entity_id,
+                title=title,
+                author=author,
+                museum=museum,
+                public_url=public_url,
+                image_url=image_url,
+                license=license_name,
+                download_url=download_url,
+                production_date_text=production_date_text,
+                production_year=production_year,
+                century_text=century_text,
+                item_types=item_types,
+                acquisition_method=acquisition_method,
+                acquisition_date_text=acquisition_date_text,
+                acquisition_year=acquisition_year,
+                production_to_acquisition_gap=production_to_acquisition_gap,
+            )
+
+            db.add(analytics_artwork)
+
+            print(
+                f"Analytics salva: {title}"
+            )
 
         cc0_count += 1
         saved_count += 1

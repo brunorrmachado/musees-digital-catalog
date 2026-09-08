@@ -108,6 +108,34 @@ export default async function AnalyticsPage() {
             </AnalyticsCard>
           </div>
         </AnalyticsGrid>
+
+        {/* GRÁFICOS */}
+
+        <AnalyticsGrid>
+          <div
+            style={{
+              gridColumn: "1 / -1",
+            }}
+          >      
+            <AnalyticsCard>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "16px",
+                }}
+              >
+                <ItemTypesChart
+                  data={itemTypes}
+                />
+                <ProductionTimelineChart
+                  data={productionYears}
+                />
+              </div>
+            </AnalyticsCard>
+          </div>
+        </AnalyticsGrid>
+
       </PageContainer>
     );    
 }

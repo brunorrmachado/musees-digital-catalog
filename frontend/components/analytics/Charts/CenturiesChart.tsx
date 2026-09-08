@@ -44,22 +44,47 @@ export default function CenturiesChart({
         colors={["#111827"]}
         borderRadius={2}
         enableLabel={false}
+        enableGridY={true}
+        enableGridX={false}
         axisBottom={{
           legend: "Século",
           legendPosition: "middle",
           legendOffset: 60,
         }}
         valueScale={{
-          type:"linear",
-          min:0,
-          max:10,
+          type: "linear",
+          min: 0,
+          max: 50,
         }}
         axisLeft={{
-          tickValues: [0 ,2 ,4 ,6 ,8 ,10],
           legend: "Quantidade",
           legendPosition: "middle",
           legendOffset: -45,
         }}
+        layers={[
+          "grid",
+          "axes",
+          "bars",
+          ({ bars }) => (
+            <>
+              {bars.map((bar) => (
+                <text
+                  key={bar.key}
+                  x={bar.x + bar.width / 2}
+                  y={bar.y - 8}
+                  textAnchor="middle"
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    fill: "#111827",
+                  }}
+                >
+                  {bar.data.value}
+                </text>
+              ))}
+            </>
+          ),
+        ]}
         theme={{
           axis: {
             ticks: {
