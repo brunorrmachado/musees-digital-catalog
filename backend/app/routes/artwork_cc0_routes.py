@@ -1,11 +1,10 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
+from fastapi import Query
 from sqlalchemy import func
+
 from app.database.database import SessionLocal
 from app.models.artwork_cc0_models import CC0Artwork
-from app.schemas.artwork_cc0_schemas import (
-    CC0ArtworkResponse
-)
 
 router = APIRouter(
     prefix="/cc0-artworks",
@@ -13,26 +12,44 @@ router = APIRouter(
 )
 
 
-@router.get(
-    "/",
-    response_model=list[CC0ArtworkResponse]
-)
-def list_cc0_artworks():
-
+@router.get("/")
+def list_cc0_artworks(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100)
+):
     db = SessionLocal()
 
     try:
+        total = (
+            db.query(
+                func.count(CC0Artwork.id)
+            )
+            .scalar()
+        )
+
+        offset = (page - 1) * limit
 
         artworks = (
             db.query(CC0Artwork)
             .order_by(CC0Artwork.title)
+            .offset(offset)
+            .limit(limit)
             .all()
         )
 
-        return artworks
+        total_pages = (
+            total + limit - 1
+        ) // limit
+
+        return {
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "total_pages": total_pages,
+            "items": artworks,
+        }
 
     finally:
-
         db.close()
 
 

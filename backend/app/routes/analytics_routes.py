@@ -14,6 +14,25 @@ from app.models.artwork_cc0_models import (
     CC0ArtworkAnalytics,
 )
 
+from fastapi import APIRouter, Depends
+from sqlalchemy import func
+
+# Mapeamentos amigáveis para dashboards
+
+ACQUISITION_METHOD_LABELS = {
+    "Don manuel": "Doação",
+    "Inscription rétrospective suite au récolement": "Inventário",
+}
+
+ITEM_TYPES_LABELS = {
+    "Vêtements et accessoires de vêtement": "Vestimentas",
+    "Textile": "Têxtil",
+    "Emballage - Conditionnement": "Embalagem",
+    "Photographie": "Fotos"
+
+}
+
+
 router = APIRouter(
     prefix="/analytics",
     tags=["Analytics"],
@@ -113,6 +132,10 @@ def get_acquisition_methods(
     return [
         {
             "method": row.acquisition_method,
+            "label": ACQUISITION_METHOD_LABELS.get(
+                row.acquisition_method,
+                row.acquisition_method,
+            ),
             "count": row.count,
         }
         for row in results
@@ -145,6 +168,10 @@ def get_item_types(
     return [
         {
             "item_type": row.item_types,
+            "label": ITEM_TYPES_LABELS.get(
+                row.item_types,
+                row.item_types,
+            ),
             "count": row.count,
         }
         for row in results
