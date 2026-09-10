@@ -1,12 +1,16 @@
 # Ambiente virtual
+.venv/
 backend/.venv/
 
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Variáveis de ambiente
 .env
+.env.*
 
 # VS Code
 .vscode/
@@ -16,3 +20,12 @@ __pycache__/
 
 # Logs
 *.log
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
